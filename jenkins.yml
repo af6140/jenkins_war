@@ -1,0 +1,38 @@
+jenkins:
+  mode: NORMAL
+  numExecutors: 1
+  labelString: "linux"
+  scmCheckoutRetryCount: 0
+  myViewsTabBar: "standard"
+  viewsTabBar: "standard"
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "admin"
+  globalNodeProperties:
+    - envVars:
+        env:
+          - key: JFR_LOCAL_WORKSPACE
+            value: /apps/workspace
+          - key: PIPELINE_LIBRARY_SKIP_WINDOWS
+            value: true
+          - key: PIPELINE_LIBRARY_USE_DEFAULT_MAVEN_REPO
+            value: true
+  nodes:
+    - permanent:
+        name: "static-agent"
+        remoteFS: "/home/jenkins"
+        launcher:
+          jnlp:
+            workDirSettings:
+              disabled: true
+              failIfWorkDirIsMissing: false
+              internalDir: "remoting"
+              workDirPath: "/tmp"
+tool:
+  jdk:
+    installations:
+      - home: "/Library/Java/JavaVirtualMachines/jdk1.8.0_152.jdk/Contents/Home"
+        name: "Default"

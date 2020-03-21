@@ -1,0 +1,135 @@
+bundle:
+  groupId: "com.github.af6140.jenkins"
+  artifactId: "custom-war"
+  description: "Just a WAR auto-generation-sample"
+war:
+  groupId: "org.jenkins-ci.main"
+  artifactId: "jenkins-war"
+  source:
+    version: 2.204.5
+plugins:
+  - groupId: "io.jenkins"
+    artifactId: "configuration-as-code"
+    source:
+      version: 1.36
+  - groupId: "org.jenkins-ci.plugins.workflow"
+    artifactId: "workflow-aggregator"
+    source:
+      version: 2.6
+  - groupId: "org.jenkins-ci.plugins.workflow"
+    artifactId: "workflow-step-api"
+    source:
+      version: 2.20
+  - groupId: "org.jenkins-ci.plugins.workflow"
+    artifactId: "workflow-support"
+    source:
+      version: 3.4
+  - groupId: "org.jenkins-ci.plugins.workflow"
+    artifactId: "workflow-api"
+    source:
+      version: 2.39
+  - groupId: "org.jenkins-ci.plugins.workflow"
+    artifactId: "workflow-scm-step"
+    source:
+      version: 2.9
+  - groupId: "org.jenkins-ci.plugins.workflow"
+    artifactId: "workflow-durable-task-step"
+    source:
+      version: 2.31
+  - groupId: "org.jenkins-ci.plugins.workflow"
+    artifactId: "workflow-basic-steps"
+    source:
+      version: 2.18
+  - groupId: "org.jenkinsci.plugins"
+    artifactId: "pipeline-model-definition"
+    source:
+      version: 1.5.1
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "structs"
+    source:
+      version: 1.20
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "script-security"
+    source:
+      version: 1.71
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "groovy"
+    source:
+      version: 2.2
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "mailer"
+    source:
+      version: 1.30
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "cloudbees-bitbucket-branch-source"
+    source:
+      version: 2.6.0
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "matrix-project"
+    source:
+      version: 1.14
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "git"
+    source:
+      version: 3.12.1
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "git-client"
+    source:
+      version: 2.7.7
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "credentials"
+    source:
+      version: 2.2.0
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "scm-api"
+    source:
+      version: 2.6.3
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "ssh-credentials"
+    source:
+      version: 1.17.1
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "display-url-api"
+    source:
+      version: 2.3.2
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "jackson2-api"
+    source:
+      version: 2.10.0
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "docker-workflow"
+    source:
+      version: 1.19
+  - groupId: "org.jenkins-ci.plugins.workflow"
+    artifactId: "workflow-job"
+    source:
+      version: 2.35
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "pipeline-graph-analysis"
+    source:
+      version: 1.10
+  - groupId: "org.jenkins-ci.plugins.workflow"
+    artifactId: "workflow-cps"
+    source:
+      version: 2.70
+  - groupId: "org.jenkins-ci.plugins"
+    artifactId: "apache-httpcomponents-client-4-api"
+    source:
+      version: 4.5.10-1.0
+
+
+systemProperties: {
+  jenkins.model.Jenkins.slaveAgentPort: "50000",
+  jenkins.model.Jenkins.slaveAgentPortEnforce: "true"
+}
+casc:
+  - id: "jcasc-config"
+    source:
+      dir: jenkins.yml
+# TODO: Support System Groovy Scripts Bundling
+#https://github.com/oleg-nenashev/ci.jenkins.io-runner/
+#groovyHooks:
+#  - type: "init"
+#    id: "initScripts"
+#    source:
+#      dir: "init_scripts/src/main/groovy"
