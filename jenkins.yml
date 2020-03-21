@@ -1,4 +1,11 @@
 jenkins:
+  systemMessage: |
+    Welcome to our build server.
+
+    This Jenkins is configured and managed 'as code'.
+    Config is now mostly handled by the 'Jenkins Configuration as Code' (JCasC) plugin.
+    JCasC config can be found in the jenkins.yaml file in the $JENKINS_HOME/casc/ folder.
+
   mode: NORMAL
   numExecutors: 1
   labelString: "linux"
@@ -10,16 +17,12 @@ jenkins:
       allowsSignup: false
       users:
         - id: "admin"
-          password: "admin"
+          password: "${ADMIN_PASS:-admin}"
   globalNodeProperties:
     - envVars:
         env:
-          - key: JFR_LOCAL_WORKSPACE
-            value: /apps/workspace
-          - key: PIPELINE_LIBRARY_SKIP_WINDOWS
-            value: true
-          - key: PIPELINE_LIBRARY_USE_DEFAULT_MAVEN_REPO
-            value: true
+          - key: MVN_OPTS
+            value: ${MVN_OPTS:--Xms256m -Xmx512m -Djava.security.egd=file:/dev/urandom}
   nodes:
     - permanent:
         name: "static-agent"
@@ -31,8 +34,97 @@ jenkins:
               failIfWorkDirIsMissing: false
               internalDir: "remoting"
               workDirPath: "/tmp"
+    - permanent:
+        labelString: "linux docker test"
+        mode: NORMAL
+        name: "utility-node-2"
+        numExecutors: 4
+        remoteFS: "/home/user2"
+        launcher:
+          ssh:
+            host: "192.168.1.1"
+            port: 22
+            credentialsId: test
+            launchTimeoutSeconds: 60
+            maxNumRetries: 3
+            retryWaitTime: 30
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
 tool:
   jdk:
     installations:
-      - home: "/Library/Java/JavaVirtualMachines/jdk1.8.0_152.jdk/Contents/Home"
+      - home: "${JAVA_PATH:-/Library/Java/JavaVirtualMachines/jdk1.8.0_152.jdk/Contents/Home}"
         name: "Default"
+  git:
+    installations:
+      - home: "${GIT_PATH:-/usr/local/bin/git}"
+        name: "Default"
+  maven:
+    installations:
+      - home: "${MVN_HOME:-/usr/local/bin/mvn}"
+        name: "Default"
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - basicSSHUserPrivateKey:
+              scope: SYSTEM
+              id: test_ssh_key_with_pass
+              username: ssh_root
+              passphrase: ${SSH_KEY_PASSWORD}
+              description: "SSH passphrase with private key file. Private key provided"
+              privateKeySource:
+                directEntry:
+                  privateKey: ${SSH_PRIVATE_KEY}
+          - usernamePassword:
+              scope: SYSTEM
+              id: sudo_password
+              username: root
+              password: ${SUDO_PASSWORD}
+          - string:
+              scope: GLOBAL
+              id: slack-token
+              secret: "${SLACK_TOKEN}"
+              description: Slack token
+          - string:
+              scope: GLOBAL
+              id: sonarqube-token
+              secret: "${SONARQUBE_TOKEN}"
+              description: Sonarqube token
+
+unclassified:
+  globalLibraries:
+    libraries:
+      - name: "awesome-lib"
+        retriever:
+          modernSCM:
+            scm:
+              git:
+                remote: "https://github.com/jenkins-infra/pipeline-library.git"
+                credentialsId: "reimagined-parakeet-ssh"
+
+  location:
+    adminAddress: you@example.com
+    url: http://localhost:8080
+  mailer:
+    replyToAddress: ${EMAIL_ADDRESS:-donotreply@loalhost}
+    smtpHost: ${SMTP_HOST:-loalhost}
+    smtpPort: ${SMTP_PORT:-25}
+  slackNotifier:
+    teamDomain: ${SLACK_DOMAIN:-local}
+    tokenCredentialId: slack-token
+  sonarglobalconfiguration:                  # mandatory
+    buildWrapperEnabled: true
+    installations:                           # mandatory
+      - name: "TEST"                         # id of the SonarQube configuration - to be used in jobs
+        serverUrl: "http://url:9000"
+        #credentialsId: sonarqube-token    # id of the credentials containing sonar auth token (since 2.9 version)
+        serverAuthenticationToken: "token"   # for retrocompatibility with versions < 2.9
+        mojoVersion: "mojoVersion"
+        additionalProperties: "blah=blah"
+        additionalAnalysisProperties: "additionalAnalysisProperties"
+        triggers:
+          skipScmCause: true
+          skipUpstreamCause: true
+          envVar: "envVar"

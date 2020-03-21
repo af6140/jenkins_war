@@ -20,7 +20,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
               <goal>custom-war</goal>
             </goals>
             <configuration>
-              <configFilePath>config.yml</configFilePath>
+              <configFilePath>war-config.yml</configFilePath>
               <warVersion>${project.version}</warVersion>
             </configuration>
           </execution>
