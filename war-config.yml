@@ -168,8 +168,8 @@ casc:
       dir: jenkins.yml
 # TODO: Support System Groovy Scripts Bundling
 #https://github.com/oleg-nenashev/ci.jenkins.io-runner/
-#groovyHooks:
-#  - type: "init"
-#    id: "initScripts"
-#    source:
-#      dir: "init_scripts/src/main/groovy"
+groovyHooks:
+  - type: "init"
+    id: "initScripts"
+    source:
+      dir: "init_script/src/main/groovy"
